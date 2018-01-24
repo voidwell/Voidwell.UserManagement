@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Collections.Generic;
+using System;
 
 namespace Voidwell.UserManagement
 {
@@ -37,6 +38,8 @@ namespace Voidwell.UserManagement
                     o.Filters.AddService(typeof(InvalidSecurityQuestionFilter));
                     o.Filters.AddService(typeof(InvalidUserIdFilter));
                     o.Filters.AddService(typeof(InvalidPasswordFilter));
+                    o.Filters.AddService(typeof(InvalidRoleRequestFilter));
+                    o.Filters.AddService(typeof(UserLockedOutFilter));
                 });
 
             services.AddEntityFrameworkContext(Configuration);
@@ -49,6 +52,9 @@ namespace Voidwell.UserManagement
                     identity.Password.RequireLowercase = false;
                     identity.Password.RequireUppercase = false;
                     identity.Password.RequiredLength = 6;
+
+                    identity.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                    identity.Lockout.MaxFailedAccessAttempts = 5;
                 })
                 .AddEntityFrameworkStores<UserDbContext>()
                 .AddDefaultTokenProviders();
@@ -84,6 +90,8 @@ namespace Voidwell.UserManagement
             services.AddTransient<InvalidSecurityQuestionFilter>();
             services.AddTransient<InvalidUserIdFilter>();
             services.AddTransient<InvalidPasswordFilter>();
+            services.AddTransient<InvalidRoleRequestFilter>();
+            services.AddTransient<UserLockedOutFilter>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

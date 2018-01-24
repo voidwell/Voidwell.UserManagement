@@ -8,6 +8,7 @@ using Voidwell.UserManagement.Data.Models;
 using Voidwell.UserManagement.Models;
 using System.Linq;
 using Voidwell.UserManagement.Exceptions;
+using System.Threading;
 
 namespace Voidwell.UserManagement.Services
 {
@@ -98,6 +99,41 @@ namespace Voidwell.UserManagement.Services
             await _userManager.RemoveFromRoleAsync(user, role);
         }
 
+        public async Task<IEnumerable<string>> UpdateRoles(Guid userId, IEnumerable<string> roles)
+        {
+            var user = await GetUser(userId);
+            if (user == null) {
+                return null;
+            }
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+
+            if (Enumerable.SequenceEqual(roles.OrderBy(a => a), currentRoles.OrderBy(a => a)))
+            {
+                return roles;
+            }
+
+            var rolesToAdd = roles.Except(currentRoles);
+            var rolesToRemove = currentRoles.Except(roles).ToList();
+
+            if (rolesToAdd.Union(rolesToRemove).Contains(UserRole.SuperAdmin.ToString(), StringComparer.OrdinalIgnoreCase))
+            {
+                throw new InvalidRoleRequestException("Users cannot modify SuperAdmin!");
+            }
+
+            if (rolesToRemove.Count() > 0)
+            {
+                await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+            }
+
+            if (rolesToAdd.Count() > 0)
+            {
+                await _userManager.AddToRolesAsync(user, rolesToAdd);
+            }
+
+            return roles;
+        }
+
         public async Task<UserDetails> GetUserDetails(Guid userId)
         {
             var user = await GetUser(userId);
@@ -106,6 +142,7 @@ namespace Voidwell.UserManagement.Services
             return new UserDetails
             {
                 Id = user.Id,
+                UserName = user.UserName,
                 Email = user.Email,
                 TimeZone = user.TimeZone,
                 CreatedDate = user.CreatedDate,
@@ -154,7 +191,8 @@ namespace Voidwell.UserManagement.Services
 
             if (result.Succeeded)
             {
-                await _userManager.SetLockoutEnabledAsync(user, false);
+                await _userManager.ResetAccessFailedCountAsync(user);
+                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MinValue);
             }
         }
 
@@ -166,6 +204,49 @@ namespace Voidwell.UserManagement.Services
                 UserId = userId,
                 Name = user.UserName
             };
+        }
+
+        public async Task<IEnumerable<DisplayName>> GetDisplayNames(IEnumerable<Guid> userIds)
+        {
+            var users = await _userManager.Users
+                    .Where(a => userIds.Contains(a.Id))
+                    .AsNoTracking()
+                    .ToListAsync();
+
+            return users.Select(a =>
+            {
+                return new DisplayName
+                {
+                    UserId = a.Id,
+                    Name = a.UserName
+                };
+            });
+        }
+
+        public async Task LockUser(Guid userId, int? minutes, bool? permanant)
+        {
+            var user = await GetUser(userId);
+
+            await _userManager.SetLockoutEnabledAsync(user, true);
+
+            if (permanant != null && permanant.Value)
+            {
+                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+            }
+            else
+            {
+                var lockMinutes = minutes != null ? minutes.Value : 30;
+                var lockSpan = DateTimeOffset.UtcNow.AddMinutes(lockMinutes);
+                await _userManager.SetLockoutEndDateAsync(user, lockSpan);
+            }
+        }
+
+        public async Task UnlockUser(Guid userId)
+        {
+            var user = await GetUser(userId);
+
+            await _userManager.ResetAccessFailedCountAsync(user);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MinValue);
         }
     }
 }

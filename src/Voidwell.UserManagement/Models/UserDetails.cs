@@ -6,6 +6,7 @@ namespace Voidwell.UserManagement.Models
     public class UserDetails
     {
         public Guid Id { get; set; }
+        public string UserName { get; set; }
         public string Email { get; set; }
         public string TimeZone { get; set; }
         public DateTimeOffset? CreatedDate { get; set; }

@@ -24,7 +24,7 @@ namespace Voidwell.UserManagement.Data
 
             services.AddDbContext<UserDbContext>(builder =>
                 builder.UseNpgsql(options.DBConnectionString, b => b.MigrationsAssembly(_migrationAssembly)));
-            services.AddTransient(sp => new Func<UserDbContext>(() => sp.GetRequiredService<UserDbContext>()));
+            services.AddScoped(sp => new Func<UserDbContext>(() => sp.GetRequiredService<UserDbContext>()));
 
             return services;
         }

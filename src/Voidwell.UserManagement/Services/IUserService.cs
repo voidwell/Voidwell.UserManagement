@@ -22,5 +22,9 @@ namespace Voidwell.UserManagement.Services
         Task<string> GetPasswordResetToken(Guid userId);
         Task ResetPassword(Guid userId, string token, string newPassword);
         Task<DisplayName> GetDisplayName(Guid userId);
+        Task<IEnumerable<DisplayName>> GetDisplayNames(IEnumerable<Guid> userIds);
+        Task<IEnumerable<string>> UpdateRoles(Guid userId, IEnumerable<string> roles);
+        Task LockUser(Guid userId, int? minutes = 30, bool? permanant = false);
+        Task UnlockUser(Guid userId);
     }
 }

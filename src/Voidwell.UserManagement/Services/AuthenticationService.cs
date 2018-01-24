@@ -41,8 +41,15 @@ namespace Voidwell.UserManagement.Services
                 throw new UserNotFoundException();
             }
 
+            if (await _userManager.IsLockedOutAsync(user))
+            {
+                _logger.LogWarning($"Login attempt for locked out user: {username}");
+                throw new UserLockedOutException();
+            }
+
             if (!await _userManager.CheckPasswordAsync(user, password))
             {
+                await _userManager.AccessFailedAsync(user);
                 _logger.LogWarning($"Failed to authenticate for user: {username}");
                 throw new InvalidPasswordException();
             }

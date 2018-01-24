@@ -45,6 +45,11 @@ namespace Voidwell.UserManagement.Controllers
         [HttpPost]
         public async Task<ActionResult> AddRole([FromBody]RoleRequest roleRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var role = await _roleService.CreateRole(roleRequest.Name);
             return Created("account/roles", role);
         }

@@ -37,6 +37,13 @@ namespace Voidwell.UserManagement.Controllers
             return Ok(displayName);
         }
 
+        [HttpPost("names")]
+        public async Task<ActionResult> GetDisplayNames([FromBody] BatchUserRequest request)
+        {
+            var displayNames = await _userService.GetDisplayNames(request.UserIds);
+            return Ok(displayNames);
+        }
+
         [HttpDelete("{userId:guid}")]
         public async Task<ActionResult> DeleteUser(Guid userId)
         {
@@ -59,18 +66,33 @@ namespace Voidwell.UserManagement.Controllers
             return Ok(user);
         }
 
-        [HttpPost("{userId:guid}/role/{roleName}")]
-        public async Task<ActionResult> AddRoleToUser(Guid userId, string roleName)
+        [HttpPut("{userId:guid}/roles")]
+        public async Task<ActionResult> AddRolesToUser(Guid userId, [FromBody]UserRolesRequest userRoles)
         {
-            var roles = await _userService.AddRole(userId, roleName);
-            return Created("user/role", roles);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var roles = await _userService.UpdateRoles(userId, userRoles.Roles);
+            if (roles == null)
+            {
+                return NotFound("User not found");
+            }
+            return Created("user/roles", roles);
         }
 
-        [HttpDelete("{userId:guid}/role/{roleName}")]
-        public async Task<ActionResult> RemoveRole(Guid userId, string roleName)
+        [HttpPost("{userId:guid}/lock")]
+        public async Task<ActionResult> PostLockUser(Guid userId, [FromBody] UserLockRequest request)
         {
-            await _userService.RemoveRole(userId, roleName);
+            await _userService.LockUser(userId, request?.LockLength, request?.IsPermanant);
+            return NoContent();
+        }
 
+        [HttpPost("{userId:guid}/unlock")]
+        public async Task<ActionResult> PostUnkockUser(Guid userId)
+        {
+            await _userService.UnlockUser(userId);
             return NoContent();
         }
     }

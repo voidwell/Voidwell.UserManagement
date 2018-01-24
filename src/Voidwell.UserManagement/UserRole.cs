@@ -2,6 +2,7 @@
 {
     public enum UserRole
     {
+        SuperAdmin,
         User,
         Administrator,
         EventManager

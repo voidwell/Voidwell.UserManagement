@@ -8,7 +8,7 @@ namespace Voidwell.UserManagement.Data
         public UserDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
-            optionsBuilder.UseNpgsql("Host=localhost;Database=voidwell.auth;Username=localdev;Password=localdev;Pooling=true");
+            optionsBuilder.UseNpgsql("Host=localhost;Database=voidwell.auth;Username=localdev;Password=localdev");
 
             return new UserDbContext(optionsBuilder.Options);
         }
