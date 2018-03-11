@@ -6,6 +6,7 @@ using Voidwell.UserManagement.Data.Models;
 using Voidwell.UserManagement.Models;
 using System.Linq;
 using System.Security.Claims;
+using System;
 
 namespace Voidwell.UserManagement.Services
 {
@@ -55,6 +56,9 @@ namespace Voidwell.UserManagement.Services
             }
 
             _logger.LogDebug($"Successfully authenticated user: {username}");
+
+            user.LastLoginDate = DateTimeOffset.UtcNow;
+            await _userService.UpdateUser(user);
 
             var claims = (await _userManager.GetClaimsAsync(user)).ToList();
 

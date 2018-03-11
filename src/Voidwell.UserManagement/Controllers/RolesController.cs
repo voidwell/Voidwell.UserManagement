@@ -4,6 +4,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using Voidwell.UserManagement.Services;
 using Voidwell.UserManagement.Models;
+using System.Collections.Generic;
 
 namespace Voidwell.UserManagement.Controllers
 {
@@ -28,6 +29,16 @@ namespace Voidwell.UserManagement.Controllers
         {
             var userId = _userHelper.GetUserIdFromContext();
 
+            var roles = await _userService.GetRoles(userId);
+            if (roles == null)
+                roles = new string[0];
+
+            return Ok(roles);
+        }
+
+        [HttpGet("{userId:guid}")]
+        public async Task<ActionResult> GetRolesForUser(Guid userId)
+        {
             var roles = await _userService.GetRoles(userId);
             if (roles == null)
                 roles = new string[0];

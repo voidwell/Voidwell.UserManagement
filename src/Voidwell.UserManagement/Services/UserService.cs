@@ -189,6 +189,9 @@ namespace Voidwell.UserManagement.Services
             var user = await GetUser(userId);
             var result = await _userManager.ResetPasswordAsync(user, token, password);
 
+            user.PasswordSetDate = DateTimeOffset.UtcNow;
+            await UpdateUser(user);
+
             if (result.Succeeded)
             {
                 await _userManager.ResetAccessFailedCountAsync(user);
