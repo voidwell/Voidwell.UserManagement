@@ -8,6 +8,7 @@ using Voidwell.UserManagement.Exceptions;
 using Voidwell.UserManagement.Models;
 using Voidwell.UserManagement.Data;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json.Linq;
 
 namespace Voidwell.UserManagement.Services
 {
@@ -34,6 +35,8 @@ namespace Voidwell.UserManagement.Services
 
             if (questions == null)
                 return null;
+
+            Console.WriteLine(userId.ToString(), JToken.FromObject(questions).ToString());
 
             return questions.Select(q => new SecurityQuestion { Question = q.Question, Answer = q.Answer });
         }
@@ -94,6 +97,8 @@ namespace Voidwell.UserManagement.Services
         public async Task<IEnumerable<SecurityQuestion>> GetSecurityQuestionsByEmail(string email)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(a => a.Email.ToLower() == email.ToLower());
+            if (user == default(Data.Models.ApplicationUser))
+                return null;
 
             return await GetSecurityQuestions(user.Id);
         }

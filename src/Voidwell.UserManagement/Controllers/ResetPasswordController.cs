@@ -29,10 +29,18 @@ namespace Voidwell.UserManagement.Controllers
         }
 
         [HttpPost("start")]
-        public async Task<IEnumerable<string>> PostResetStart([FromBody]ResetPasswordStart model)
+        public async Task<ActionResult> PostResetStart([FromBody]ResetPasswordStart model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var questions = await _securityQuestionService.GetSecurityQuestionsByEmail(model.Email);
-            return questions.Select(a => a.Question);
+            if (questions == null)
+                return NotFound("No user was found with this email.");
+            
+            return Ok(questions.Select(a => a.Question));
         }
 
         [HttpPost("questions")]
@@ -45,7 +53,7 @@ namespace Voidwell.UserManagement.Controllers
                 var match = model.Questions.Any(a => a.Question == storedQuestion.Question && a.Answer.ToLower() == storedQuestion.Answer.ToLower());
                 if (!match)
                 {
-                    return BadRequest();
+                    return BadRequest("One or more answers were invalid.");
                 }
             }
 
