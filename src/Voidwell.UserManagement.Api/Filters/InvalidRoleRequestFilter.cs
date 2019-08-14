@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using Voidwell.UserManagement.Exceptions;
 
-namespace Voidwell.UserManagement.Filters
+namespace Voidwell.UserManageement.Api.Filters
 {
-    public class UserLockedOutFilter : IExceptionFilter
+    public class InvalidRoleRequestFilter : IExceptionFilter
     {
         public void OnException(ExceptionContext context)
         {
-            if (context.Exception is UserLockedOutException)
+            if (context.Exception is InvalidRoleRequestException)
             {
                 context.Result = new ContentResult
                 {
-                    StatusCode = (int)HttpStatusCode.Forbidden,
-                    Content = "Account has been locked. Please try again later.",
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Content = context.Exception?.Message ?? "A modified role is invalid",
                     ContentType = "text/plain"
                 };
             }

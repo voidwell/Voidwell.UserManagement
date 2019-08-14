@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voidwell.UserManagement", "src\Voidwell.UserManagement\Voidwell.UserManagement.csproj", "{3CB8DA74-429F-4896-958E-B45B3F7FDB37}"
 EndProject
@@ -9,12 +9,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4F3CEED3-E4A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BAF62441-142F-4DCF-9047-17E25F4F302E}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		Directory.Build.props = Directory.Build.props
 		Dockerfile = Dockerfile
 		Dockerfile.debug = Dockerfile.debug
+		init-migrate.bat = init-migrate.bat
+		init-update.bat = init-update.bat
 		new-build.sh = new-build.sh
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voidwell.UserManagement.Api", "src\Voidwell.UserManagement.Api\Voidwell.UserManagement.Api.csproj", "{0E61F542-EC24-46CC-A34F-081BD72BA147}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voidwell.UserManagement.Data", "src\Voidwell.UserManagement.Data\Voidwell.UserManagement.Data.csproj", "{20B27115-A855-43E3-9010-4E3E16DC0069}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,12 +33,22 @@ Global
 		{3CB8DA74-429F-4896-958E-B45B3F7FDB37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CB8DA74-429F-4896-958E-B45B3F7FDB37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CB8DA74-429F-4896-958E-B45B3F7FDB37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E61F542-EC24-46CC-A34F-081BD72BA147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E61F542-EC24-46CC-A34F-081BD72BA147}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E61F542-EC24-46CC-A34F-081BD72BA147}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E61F542-EC24-46CC-A34F-081BD72BA147}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20B27115-A855-43E3-9010-4E3E16DC0069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20B27115-A855-43E3-9010-4E3E16DC0069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20B27115-A855-43E3-9010-4E3E16DC0069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20B27115-A855-43E3-9010-4E3E16DC0069}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3CB8DA74-429F-4896-958E-B45B3F7FDB37} = {4F3CEED3-E4AB-4A18-9AB6-D20DDD679CBC}
+		{0E61F542-EC24-46CC-A34F-081BD72BA147} = {4F3CEED3-E4AB-4A18-9AB6-D20DDD679CBC}
+		{20B27115-A855-43E3-9010-4E3E16DC0069} = {4F3CEED3-E4AB-4A18-9AB6-D20DDD679CBC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE8356B9-449C-421F-8C67-CAE7445379AC}

@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using System;
-using System.Collections.Generic;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Voidwell.UserManagement.Data.Migrations.UserDb
+namespace Voidwell.UserManagement.Data.Migrations
 {
     public partial class InitialUserDbMigration : Migration
     {

@@ -5,8 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Voidwell.UserManagement.Filters;
-using Voidwell.UserManagement.Services;
 using Voidwell.UserManagement.Data;
 using Voidwell.UserManagement.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,14 +12,27 @@ using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Collections.Generic;
 using System;
+using Voidwell.UserManageement.Api.Filters;
+using Voidwell.UserManagement;
+using Voidwell.Logging;
 
-namespace Voidwell.UserManagement
+namespace Voidwell.UserManageement.Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath);
+
+            if (env.IsDevelopment())
+            {
+                builder.AddJsonFile("devsettings.json", true, true);
+            }
+
+            builder.AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -79,13 +90,7 @@ namespace Voidwell.UserManagement
                 validator.OutboundClaimTypeMap = new Dictionary<string, string>();
             });
 
-            services.AddTransient<IRegistrationService, RegistrationService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<ISecurityQuestionService, SecurityQuestionService>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
-
-            services.AddTransient<IUserHelper, UserHelper>();
+            services.AddApplicationServices();
 
             services.AddTransient<InvalidSecurityQuestionFilter>();
             services.AddTransient<InvalidUserIdFilter>();
@@ -97,6 +102,8 @@ namespace Voidwell.UserManagement
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.InitializeDatabases();
+
+            app.UseLoggingMiddleware();
 
             app.UseAuthentication();
 

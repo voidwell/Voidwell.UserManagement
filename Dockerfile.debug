@@ -1,14 +1,16 @@
-FROM microsoft/dotnet:2.0.0-sdk
+FROM microsoft/dotnet:2.2-sdk
 
 ENV DOTNET_USE_POLLING_FILE_WATCHER 1
+ENV ASPNETCORE_ENVIRONMENT Development
 
-COPY ./src/Voidwell.UserManagement/Voidwell.UserManagement.csproj /tmp
-COPY ./Directory.Build.props /
+COPY ./src/Voidwell.UserManagement.Api/*.csproj /tmp/
 
 WORKDIR /tmp
 
 RUN dotnet restore
 
-WORKDIR /app
+WORKDIR /app/Voidwell.UserManagement.Api
 
-ENTRYPOINT dotnet watch run --no-launch-profile
+EXPOSE 5000
+
+CMD [ "dotnet", "watch", "run", "--no-launch-profile" ]

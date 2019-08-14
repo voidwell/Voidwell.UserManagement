@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using Voidwell.UserManagement.Exceptions;
 
-namespace Voidwell.UserManagement.Filters
+namespace Voidwell.UserManageement.Api.Filters
 {
-    public class InvalidSecurityQuestionFilter : IExceptionFilter
+    public class InvalidPasswordFilter : IExceptionFilter
     {
         public void OnException(ExceptionContext context)
         {
-            if (context.Exception is InvalidSecurityQuestionException)
+            if (context.Exception is InvalidPasswordException)
             {
                 context.Result = new ContentResult
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest,
-                    Content = "A security question provided does not match with any permitted questions",
+                    Content = "The password entered is incorrect",
                     ContentType = "text/plain"
                 };
             }

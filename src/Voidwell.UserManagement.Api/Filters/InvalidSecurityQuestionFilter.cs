@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using Voidwell.UserManagement.Exceptions;
 
-namespace Voidwell.UserManagement.Filters
+namespace Voidwell.UserManageement.Api.Filters
 {
-    public class InvalidUserIdFilter : IExceptionFilter
+    public class InvalidSecurityQuestionFilter : IExceptionFilter
     {
         public void OnException(ExceptionContext context)
         {
-            if (context.Exception is InvalidUserIdException)
+            if (context.Exception is InvalidSecurityQuestionException)
             {
                 context.Result = new ContentResult
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest,
-                    Content = "User Id in sub claim is invalid",
+                    Content = "A security question provided does not match with any permitted questions",
                     ContentType = "text/plain"
                 };
             }

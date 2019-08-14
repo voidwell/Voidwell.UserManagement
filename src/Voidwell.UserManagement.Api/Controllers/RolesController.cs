@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
-using Microsoft.Extensions.Logging;
 using Voidwell.UserManagement.Services;
 using Voidwell.UserManagement.Models;
-using System.Collections.Generic;
 
 namespace Voidwell.UserManagement.Controllers
 {
@@ -14,14 +12,12 @@ namespace Voidwell.UserManagement.Controllers
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
         private readonly IUserHelper _userHelper;
-        private readonly ILogger _logger;
 
-        public RolesController(IUserService userService, IRoleService roleService, IUserHelper userHelper, ILogger<RolesController> logger)
+        public RolesController(IUserService userService, IRoleService roleService, IUserHelper userHelper)
         {
             _userService = userService;
             _roleService = roleService;
             _userHelper = userHelper;
-            _logger = logger;
         }
 
         [HttpGet]
